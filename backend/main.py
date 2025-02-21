@@ -1,11 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from typing import List
+from app.api.routes import router as stock_router
+from app.database.database import Base, engine
 
+# Initialize database tables
+Base.metadata.create_all(bind=engine)
+
+# Create FastAPI app
 app = FastAPI()
 
-# Allow CORS for React frontend
+# Include router for API routes
+app.include_router(stock_router, prefix="/api")
+
+# Allow CORS for frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -13,16 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-stocks = [
-    {"symbol": "AAPL", "quantity": 10, "buyPrice": 150, "currentPrice": 175},
-    {"symbol": "GOOG", "quantity": 5, "buyPrice": 2800, "currentPrice": 2950},
-    {"symbol": "AMZN", "quantity": 2, "buyPrice": 3500, "currentPrice": 3400},
-]
-
-@app.get("/api/stocks", response_model=List[dict])
-def get_stocks():
-    return stocks
-
+# Root endpoint
 @app.get("/")
 def read_root():
-    return {"message": "Stock Dashboard Backend"} 
+    return {"message": "Stock Dashboard Backend"}
