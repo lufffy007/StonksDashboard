@@ -5,18 +5,18 @@ from app.api.routes import router as stock_router
 from app.database.database import Base, engine
 
 # Initialize database tables
-Base.metadata.create_all(bind=engine)
+
 
 # Create FastAPI app
 app = FastAPI()
-
+Base.metadata.create_all(bind=engine)
 # Include router for API routes
 app.include_router(stock_router, prefix="/api")
 
 # Allow CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3001"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
