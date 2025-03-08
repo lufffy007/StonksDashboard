@@ -11,4 +11,4 @@ class Stock(Base):
     buy_price: Mapped[float] = mapped_column(Float)
     current_price: Mapped[float] = mapped_column(Float, nullable=True)  # This might be null initially
     pnl: Mapped[float] = mapped_column(Float, nullable=True)
-    exchange: Mapped[str] = mapped_column(String)
+    exchange: Mapped[str] = mapped_column(Float)
