@@ -82,8 +82,13 @@ def get_stocks(db: Session = Depends(get_db)):
 @router.delete("/stocks/{stock_id}")
 def delete_stock(stock_id: int, db: Session = Depends(get_db)):
     stock = db.query(Stock).filter(Stock.id == stock_id).first()
+
     if not stock:
         raise HTTPException(status_code=404, detail="Stock not found")
-    db.delete(stock)
-    db.commit()
+    try:
+        db.delete(stock)
+        db.commit()
+    except SQLAlchemyError:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="database error occured")
     return {"message": "Stock deleted"}
